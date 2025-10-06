@@ -1,4 +1,46 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No:250541619
+AD-SOYAD:Selam Elali
+Konu Adı: Sınav Çalışma planı
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+Başla
+
+1. Kullanıcıdan çalışılacak ders sayısını al → ders_sayısı
+2. Her ders için ders adını ve hedef çalışma süresini al (saat cinsinden)
+   DersListesi ← boş liste
+   For i from 1 to ders_sayısı:
+       DersAdı ← kullanıcıdan al
+       HedefSüre ← kullanıcıdan al
+       DersListesi'ne (DersAdı, HedefSüre) ekle
+
+3. Tüm dersleri sırayla çalış:
+   For her ders in DersListesi:
+       DersAdı ← ders[0]
+       HedefSüre ← ders[1]
+       GeçenSüre ← 0
+
+       Yazdır: "Şu an çalışılan ders: " + DersAdı
+
+       While GeçenSüre < HedefSüre:
+           Yazdır: DersAdı + " dersi için " + (HedefSüre - GeçenSüre) + " saat kaldı"
+           Kullanıcıdan çalışılan süreyi al → CalisilanSure
+           GeçenSüre ← GeçenSüre + CalisilanSure
+
+           If CalisilanSure >= 1 saat:
+               Yazdır: "Mola vakti! 10 dakika ara ver."
+               Kullanıcıdan 'Mola tamam mı?' sor → molaDurumu
+               If molaDurumu == "hayır":
+                   Yazdır: "Lütfen kısa bir mola ver ve sonra devam et."
+                   Bekle (10 dakika)
+
+       Yazdır: DersAdı + " dersi için hedef süre tamamlandı."
+
+       Kullanıcıya sor: "Bu dersi tam olarak anladın mı?" → AnlamaDurumu
+       If AnlamaDurumu == "hayır":
+           Yazdır: "Bu dersi tekrar çalışmak için not alınıyor."
+           DersListesi'ne (DersAdı, 0.5 * HedefSüre) ekle
+
+4. Tüm dersler bitince:
+   Yazdır: "Günlük çalışma tamamlandı. Aferin!"
+   Yazdır: "Yarınki çalışma planını oluşturmayı unutma."
+
+Bitir
