@@ -1,4 +1,78 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No:250541619
+AD-SOYAD:Selem Elali
+Konu Adı:Renkleri karıştırarak hedef rengi bulma
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+import math
+from itertools import combinations, product
+
+# RGB renkleri arasındaki uzaklığı hesaplayan fonksiyon
+def renk_uzakligi(renk1, renk2):
+    return math.sqrt(
+        (renk1[0] - renk2[0]) ** 2 +
+        (renk1[1] - renk2[1]) ** 2 +
+        (renk1[2] - renk2[2]) ** 2
+    )
+
+# Renkleri verilen ağırlıklara göre karıştıran fonksiyon
+def renkleri_karistir(renk_agirliklari):
+    toplam_agirlik = sum(agirlik for _, agirlik in renk_agirliklari)
+    if toplam_agirlik == 0:
+        return (0, 0, 0)
+
+    r = sum(renk[0] * agirlik for renk, agirlik in renk_agirliklari)
+    g = sum(renk[1] * agirlik for renk, agirlik in renk_agirliklari)
+    b = sum(renk[2] * agirlik for renk, agirlik in renk_agirliklari)
+
+    return (
+        int(r / toplam_agirlik),
+        int(g / toplam_agirlik),
+        int(b / toplam_agirlik)
+    )
+
+# Böl ve fethet yaklaşımıyla tüm karışımları deneyen fonksiyon
+def en_iyi_karisim_bul(temel_renkler, hedef_renk, tolerans=5):
+    en_iyi_karisim = None
+    en_yakin_renk = None
+    en_kucuk_uzaklik = float("inf")
+
+    # Her kombinasyonda en fazla 3 renk karıştır (isteğe bağlı arttırılabilir)
+    for kac_renk in range(1, min(4, len(temel_renkler) + 1)):
+        for renk_kumesi in combinations(temel_renkler, kac_renk):
+            # Ağırlıkları 0.1 adımlarla dener (örnek: 0.1, 0.2, ..., 1.0)
+            adim = 0.1
+            agirlik_olasiliklari = [i * adim for i in range(1, int(1.0 / adim) + 1)]
+
+            for agirliklar in product(agirlik_olasiliklari, repeat=kac_renk):
+                if abs(sum(agirliklar) - 1.0) > 0.05:
+                    continue  # Ağırlıkların toplamı yaklaşık 1.0 olmalı
+
+                karisim = list(zip(renk_kumesi, agirliklar))
+                karisik_renk = renkleri_karistir(karisim)
+                uzaklik = renk_uzakligi(karisik_renk, hedef_renk)
+
+                if uzaklik < en_kucuk_uzaklik:
+                    en_kucuk_uzaklik = uzaklik
+                    en_yakin_renk = karisik_renk
+                    en_iyi_karisim = karisim
+
+                    if uzaklik <= tolerans:
+                        return en_iyi_karisim, en_yakin_renk
+
+    return en_iyi_karisim, en_yakin_renk
+temel_renkler = [
+    (255, 0, 0),    # Kırmızı
+    (0, 255, 0),    # Yeşil
+    (0, 0, 255),    # Mavi
+    (255, 255, 0),  # Sarı
+    (255, 255, 255) # Beyaz
+]
+
+hedef_renk = (128, 64, 192)
+
+karisim, sonuc = en_iyi_karisim_bul(temel_renkler, hedef_renk, tolerans=10)
+
+print("Hedef Renk:", hedef_renk)
+print("Elde Edilen Renk:", sonuc)
+print("Kullanılan Karışım:")
+for renk, agirlik in karisim:
+    print(f"Renk {renk} → Ağırlık: {agirlik:.2f}")
