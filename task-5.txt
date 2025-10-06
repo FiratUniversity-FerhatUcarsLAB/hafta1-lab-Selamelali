@@ -1,4 +1,108 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No:250541619
+AD-SOYAD:Selem Elali
+Konu Adı:rkadaş grubunda ortak karar verme
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+import random
+
+# Katılımcı ve etkinlik sınıflarını tanımlayalım
+
+class Katilimci:
+    def __init__(self, isim):
+        self.isim = isim
+        self.oylar = []  # Katılımcının oyladığı etkinlikler
+
+    def oy_ver(self, etkinlikler, tercihler):
+        """
+        Katılımcı etkinliklere oy verir.
+        tercihler sırasına göre, katılımcı her etkinliği oylar.
+        """
+        self.oylar = tercihler
+        print(f"{self.isim} tercihlerine göre oy verdi: {self.oylar}")
+
+class Etkinlik:
+    def __init__(self, isim):
+        self.isim = isim
+        self.oy_sayisi = 0
+        self.katilimci_sayisi = 0  # Uygunluk durumuna göre katılım sayısı
+    
+    def oy_ekle(self):
+        """Her oylama sonrası etkinlik oyunu bir artır."""
+        self.oy_sayisi += 1
+
+    def katilim_ekle(self):
+        """Etkinlik için katılım sayısını bir artır."""
+        self.katilimci_sayisi += 1
+
+# Etkinlik ve Katılımcıların başlatılması
+katilimcilar = [Katilimci("Ali"), Katilimci("Ayşe"), Katilimci("Fatma"), Katilimci("Mehmet")]
+etkinlikler = [Etkinlik("Sinema"), Etkinlik("Piknik"), Etkinlik("Bowling")]
+
+def oylama(katilimcilar, etkinlikler):
+    """Katılımcılara oy verme hakkı verir ve oylamayı toplar."""
+    # Her katılımcıya rastgele tercihler verelim (öncelik sırasına göre)
+    for katilimci in katilimcilar:
+        # Katılımcılar için rastgele tercihler (öncelik sırasına göre etkinlikler)
+        tercihler = random.sample(etkinlikler, len(etkinlikler))  # Etkinlikleri karıştır
+        katilimci.oy_ver(etkinlikler, tercihler)
+
+    # Oyların toplanması
+    for katilimci in katilimcilar:
+        for i, etkinlik in enumerate(katilimci.oylar):
+            etkinlik.oy_ekle()
+
+def esitlik_durumu_kontrolu(etkinlikler):
+    """En yüksek oyu alan etkinliklerde eşitlik durumu kontrol edilir."""
+    max_oy = max(etkinlik.oy_sayisi for etkinlik in etkinlikler)
+    en_populer_etkinlikler = [etkinlik for etkinlik in etkinlikler if etkinlik.oy_sayisi == max_oy]
+
+    if len(en_populer_etkinlikler) == 1:
+        print(f"En yüksek oyu alan etkinlik: {en_populer_etkinlikler[0].isim}!")
+        return en_populer_etkinlikler[0]  # Eşitlik yok, bir etkinlik seçildi
+    else:
+        print("Eşitlik durumu! İkinci oylama yapılacak...")
+        return ikinci_oylama(etkinlikler)  # Eşitlik varsa ikinci oylama yapılacak
+
+def ikinci_oylama(etkinlikler):
+    """Eşitlik durumunda ikinci oylama yapılır."""
+    # İkinci oylama katılımcıların yeniden oylarını vereceği bir sistem olabilir.
+    print("İkinci oylama başlatılıyor...")
+    for etkinlik in etkinlikler:
+        etkinlik.oy_sayisi = 0  # İkinci oylama için eski oylar sıfırlanır
+
+    oylama(katilimcilar, etkinlikler)  # Katılımcılara yeni oy verme hakkı tanınır
+    return esitlek_durumu_kontrolu(etkinlikler)  # Sonuç yine kontrol edilir
+
+def uygunluk_durumlarini_kontrol_et(katilimcilar, etkinlikler):
+    """Etkinlikler için uygunluk durumlarını kontrol eder, her etkinliğe katılacak kişi sayısını hesaplar."""
+    # Her katılımcı bir etkinlik için uygunluk gösterir
+    for etkinlik in etkinlikler:
+        etkinlik.katilimci_sayisi = 0  # Başlangıçta katılım sayısı sıfırlanır
+
+    # Rastgele uygunluk durumu ekleyelim (örneğin, her katılımcı 2 etkinlikte uygun olabilir)
+    for katilimci in katilimcilar:
+        uygun_etkinlikler = random.sample(etkinlikler, 2)  # Her katılımcı 2 etkinlikte uygun olsun
+        for etkinlik in uygun_etkinlikler:
+            etkinlik.katilim_ekle()
+
+    # Uygunluk durumunu yazdır
+    print("\nEtkinlikler için uygunluk durumu:")
+    for etkinlik in etkinlikler:
+        print(f"{etkinlik.isim}: {etkinlik.katilimci_sayisi} kişi uygun.")
+
+def etkinlik_sec(katilimcilar, etkinlikler):
+    """En çok oyu ve uygunluk durumuna göre en iyi etkinliği seçer."""
+    oylama(katilimcilar, etkinlikler)  # İlk oylamayı yap
+    secilen_etkinlik = esitlik_durumu_kontrolu(etkinlikler)  # Eşitlik kontrolü
+    uygunluk_durumlarini_kontrol_et(katilimcilar, etkinlikler)  # Uygunluk kontrolü
+
+    # En uygun etkinlik seçilir
+    max_katilimci = max(etkinlikler, key=lambda x: x.katilimci_sayisi)
+    print(f"En çok katılımcıya uygun olan etkinlik: {max_katilimci.isim}")
+
+    if secilen_etkinlik == max_katilimci:
+        print(f"Sonuç: {max_katilimci.isim} etkinliği seçildi!")
+    else:
+        print(f"Sonuç: En uygun etkinlik {max_katilimci.isim}, ancak {secilen_etkinlik.isim} daha fazla oy aldı!")
+        
+# Sistem çalıştırma
+etkinlik_sec(katilimcilar, etkinlikler)
