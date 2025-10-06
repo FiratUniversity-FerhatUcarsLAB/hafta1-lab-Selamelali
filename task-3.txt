@@ -1,4 +1,39 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No:250541619
+AD-SOYAD:Selem Elali
+Konu Adı:Sınıf notlarını yüksekten düşüğe sıralama
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+ALGORITMA NotlariAzalanSirala(NOTLAR)
+
+    GİRİŞ: NOTLAR → Bir liste (dizi) içinde öğrencilerin notları
+    ÇIKIŞ: NOTLAR → Yüksekten düşüğe sıralanmış haliyle aynı liste
+
+    N ← NOTLAR'ın uzunluğu
+    
+    TEKRAR i = 0'dan N-2'ye kadar
+        max_index ← i
+
+        TEKRAR j = i+1'den N-1'e kadar
+            EĞER NOTLAR[j] > NOTLAR[max_index] İSE
+                max_index ← j
+            BİTİR EĞER
+        BİTİR TEKRAR
+
+        EĞER max_index ≠ i İSE
+            // NOTLAR[i] ile NOTLAR[max_index] yer değiştir
+            GEÇİCİ ← NOTLAR[i]
+            NOTLAR[i] ← NOTLAR[max_index]
+            NOTLAR[max_index] ← GEÇİCİ
+        BİTİR EĞER
+
+    BİTİR TEKRAR
+
+    ÇIKIŞ: NOTLAR (Artık yüksekten düşüğe sıralı)
+
+BİTİR ALGORITMA
+Örnek 
+// NOTLAR = [85, 92, 76, 58, 99, 70, 88]
+// İlk turda 99 en büyük → başa geçer
+// [99, 92, 76, 58, 85, 70, 88]
+// Sonraki turda 92 en büyük → 2. sıraya geçer
+// [99, 92, 76, 58, 85, 70, 88]
+// Devam eder...
