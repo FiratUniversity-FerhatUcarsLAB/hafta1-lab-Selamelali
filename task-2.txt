@@ -1,4 +1,87 @@
-Öğrenci No:
-AD-SOYAD:
-
+Öğrenci No:250541619
+AD-SOYAD:Selem Elali
+Konu Adı:Sudoku çözme yaklaşımı
 Lütfen seçtiğiniz algoritmaya ait çözümü ve diğer isterleri aşağıya ekleyiniz:
+
+Sudoku Çözme Algoritması (Pseudocode)
+Function SolveSudoku(grid):
+    If FindEmptyCell(grid) == None:
+        Return True  // Sudoku çözüldü
+
+    (row, col) = FindEmptyCell(grid)
+
+    For num from 1 to 9:
+        If IsValid(grid, num, row, col):
+            grid[row][col] = num  // num'u yerleştir
+
+            If SolveSudoku(grid) == True:
+                Return True  // çözüm bulundu
+
+            grid[row][col] = 0  // Geri al (Backtrack)
+
+    Return False  // Bu hücreye uygun hiçbir sayı bulunamadı
+
+// Yardımcı Fonksiyonlar
+
+Function FindEmptyCell(grid):
+    For row from 0 to 8:
+        For col from 0 to 8:
+            If grid[row][col] == 0:
+                Return (row, col)  // boş hücre bulundu
+    Return None  // tüm hücreler dolu
+
+Function IsValid(grid, num, row, col):
+    // Satır kontrolü
+    For i from 0 to 8:
+        If grid[row][i] == num:
+            Return False
+
+    // Sütun kontrolü
+    For i from 0 to 8:
+        If grid[i][col] == num:
+            Return False
+
+    // 3x3 kutu kontrolü
+    startRow = row - row % 3
+    startCol = col - col % 3
+    For i from 0 to 2:
+        For j from 0 to 2:
+            If grid[startRow + i][startCol + j] == num:
+                Return False
+
+    Return True
+
+Pseudocode: Minimax Algoritması (Basit Versiyon)
+Function Minimax(board, depth, isMaximizingPlayer):
+    If GameOver(board) or depth == 0:
+        Return Evaluate(board)  // Skor hesapla
+
+    If isMaximizingPlayer:
+        bestScore = -infinity
+        For each move in GetAvailableMoves(board):
+            MakeMove(board, move, MAX_PLAYER)
+            score = Minimax(board, depth - 1, False)
+            UndoMove(board, move)
+            bestScore = Max(bestScore, score)
+        Return bestScore
+    Else:
+        bestScore = +infinity
+        For each move in GetAvailableMoves(board):
+            MakeMove(board, move, MIN_PLAYER)
+            score = Minimax(board, depth - 1, True)
+            UndoMove(board, move)
+            bestScore = Min(bestScore, score)
+        Return bestScore
+
+// Ana Fonksiyon - En iyi hamleyi bulur
+Function FindBestMove(board):
+    bestScore = -infinity
+    bestMove = None
+    For each move in GetAvailableMoves(board):
+        MakeMove(board, move, MAX_PLAYER)
+        score = Minimax(board, depth=3, isMaximizingPlayer=False)
+        UndoMove(board, move)
+        If score > bestScore:
+            bestScore = score
+            bestMove = move
+    Return bestMove
